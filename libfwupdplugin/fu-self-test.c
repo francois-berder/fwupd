@@ -492,6 +492,7 @@ fu_common_firmware_builder_func (void)
 	g_assert_cmpstr (data, ==, "xobdnas eht ni gninnur");
 }
 
+#ifndef _WIN32
 static void
 fu_test_stdout_cb (const gchar *line, gpointer user_data)
 {
@@ -499,6 +500,7 @@ fu_test_stdout_cb (const gchar *line, gpointer user_data)
 	g_debug ("got '%s'", line);
 	(*lines)++;
 }
+#endif
 
 static gboolean
 _open_cb (GObject *device, GError **error)
@@ -559,6 +561,7 @@ fu_device_locker_fail_func (void)
 static void
 fu_common_spawn_func (void)
 {
+#ifndef _WIN32
 	gboolean ret;
 	guint lines = 0;
 	g_autoptr(GError) error = NULL;
@@ -572,11 +575,13 @@ fu_common_spawn_func (void)
 	g_assert_no_error (error);
 	g_assert (ret);
 	g_assert_cmpint (lines, ==, 6);
+#endif
 }
 
 static void
 fu_common_spawn_timeout_func (void)
 {
+#ifndef _WIN32
 	gboolean ret;
 	guint lines = 0;
 	g_autoptr(GError) error = NULL;
@@ -589,6 +594,7 @@ fu_common_spawn_timeout_func (void)
 	g_assert_error (error, G_IO_ERROR, G_IO_ERROR_CANCELLED);
 	g_assert (!ret);
 	g_assert_cmpint (lines, ==, 1);
+#endif
 }
 
 static void

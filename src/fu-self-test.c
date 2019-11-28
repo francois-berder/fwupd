@@ -162,6 +162,7 @@ static void
 fu_plugin_hash_func (gconstpointer user_data)
 {
 	GError *error = NULL;
+	g_autofree gchar *pluginfn = NULL;
 	g_autoptr(FuEngine) engine = fu_engine_new (FU_APP_FLAGS_NONE);
 	g_autoptr(FuPlugin) plugin = fu_plugin_new ();
 	gboolean ret = FALSE;
@@ -175,8 +176,10 @@ fu_plugin_hash_func (gconstpointer user_data)
 	g_assert_false (ret);
 
 	/* create a tainted plugin */
-	g_setenv ("FWUPD_PLUGIN_TEST", "build-hash", TRUE);
-	ret = fu_plugin_open (plugin, PLUGINBUILDDIR, "libfu_plugin_test_invalid_build_hash." G_MODULE_SUFFIX, &error);
+	pluginfn = g_build_filename (PLUGINBUILDDIR,
+				     "libfu_plugin_test_invalid_build_hash." G_MODULE_SUFFIX,
+				     NULL);
+	ret = fu_plugin_open (plugin, pluginfn, &error);
 	g_assert_no_error (error);
 
 	/* make sure it tainted now */
@@ -2784,6 +2787,7 @@ int
 main (int argc, char **argv)
 {
 	gboolean ret;
+	g_autofree gchar *pluginfn = NULL;
 	g_autoptr(GError) error = NULL;
 	g_autoptr(FuTest) self = g_new0 (FuTest, 1);
 
@@ -2804,7 +2808,10 @@ main (int argc, char **argv)
 
 	/* load the test plugin */
 	self->plugin = fu_plugin_new ();
-	ret = fu_plugin_open (self->plugin, PLUGINBUILDDIR "/libfu_plugin_test." G_MODULE_SUFFIX, &error);
+	pluginfn = g_build_filename (PLUGINBUILDDIR,
+				     "libfu_plugin_test." G_MODULE_SUFFIX,
+				     NULL);
+	ret = fu_plugin_open (self->plugin, pluginfn, &error);
 	g_assert_no_error (error);
 	g_assert_true (ret);
 

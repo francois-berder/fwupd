@@ -26,3 +26,25 @@ shared_module('fu_plugin_test',
     plugin_deps,
   ],
 )
+
+shared_module('fu_plugin_test_invalid_build_hash',
+  fu_hash,
+  sources : [
+    'fu-plugin-test-invalid-build-hash.c',
+  ],
+  include_directories : [
+    root_incdir,
+    fwupd_incdir,
+    fwupdplugin_incdir,
+  ],
+  install : install_dummy,
+  install_dir: plugin_dir,
+  link_with : [
+    fwupd,
+    fwupdplugin,
+  ],
+  c_args : cargs,
+  dependencies : [
+    plugin_deps,
+  ],
+)
